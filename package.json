@@ -1,0 +1,13 @@
+{
+  "name": "fsfssfssfsfsfs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client/ && pnpm run dev",
+    "server": "cd server/ && pnpm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

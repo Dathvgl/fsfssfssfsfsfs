@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+.lazy-load-image span {
+  @apply w-full h-full;
+}
+
+.row {
+  @apply flex items-center;
+}
+
+.row-center {
+  @apply flex items-center justify-center;
+}
+
+.row-between {
+  @apply flex items-center justify-between;
+}
+
+.cutoff:has(+ .cutoff-btn:not(:checked)) {
+  @apply overflow-hidden;
+}
+
+.cutoff:has(+ .cutoff-btn:not(:checked))::before {
+  content: "";
+  background: linear-gradient(to bottom, transparent, white);
+  @apply absolute w-full bottom-0 pointer-events-none h-20;
+}
+
+.cutoff:has(+ .cutoff-btn:checked) {
+  @apply h-auto;
+}
+
+.cutoff-btn {
+  @apply appearance-none cursor-pointer;
+}
+
+.cutoff-btn::before {
+  content: "Expand";
+  @apply row-center;
+}
+
+.cutoff-btn:checked::before {
+  content: "Collapse";
+  @apply row-center;
+}
+
+.cutoff-btn:focus {
+  @apply outline-none;
+}
