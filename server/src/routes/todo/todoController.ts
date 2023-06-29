@@ -90,7 +90,7 @@ export abstract class TodoController {
         {
           $project: {
             data: 1,
-            count: {
+            total: {
               $let: {
                 vars: { prop: { $first: "$total" } },
                 in: "$$prop.total",

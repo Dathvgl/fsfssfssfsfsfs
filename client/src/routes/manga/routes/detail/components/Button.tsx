@@ -1,6 +1,8 @@
 import { Button } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import MangaFollowAPI from "~/apis/MangaFollowAPI";
+import { useAppSelector } from "~/redux/store";
 import { ResponseDetailManga } from "~/types/mangaLib";
 import { MangaFollowInfo } from "~/types/mongo/mangaFollowDB";
 
@@ -12,37 +14,43 @@ type MutateProps = {
 
 function DetailButton(props: { manga: ResponseDetailManga }) {
   const { manga } = props;
+  const { isUser } = useAppSelector((state) => state.user);
+
   const url = new URL(manga.url);
   const path = url.pathname.replace("/truyen-tranh/", "");
 
   const queryClient = useQueryClient();
   const { data } = useQuery({
-    queryKey: ["mangaFollow", "follow"],
+    queryKey: ["mangaFollow", "follow", isUser],
     queryFn: async () => {
+      if (!isUser) return null;
       const res = await MangaFollowAPI.getFollow("nettruyen", path);
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
   });
 
   const follow = !(data == undefined || data == null);
 
-  console.log(follow);
   const { mutate } = useMutation({
+    mutationKey: ["mangaFollow", "follow", "mutate", isUser, data],
     mutationFn: async ({ type, datas }: MutateProps) => {
+      if (!isUser) return null;
       if (type == "follow" && datas) {
-        if (data == undefined || data == null) return
         const res = await MangaFollowAPI.postFollow(datas);
-        if (res.status != 200) throw new Error();
+        if (!res || res.status != 200) throw new Error();
         return res.data;
       } else {
-        if (!data) return;
+        if (!data) return null;
         const res = await MangaFollowAPI.deleteFollow(data._id, "nettruyen");
-        if (res.status != 200) throw new Error();
+        if (!res || res.status != 200) throw new Error();
         return res.data;
       }
     },
     onSuccess: () => {
+      if (!isUser) return;
+      if (follow) toast.success("Unfollow manga");
+      else toast.success("Follow manga");
       return queryClient.invalidateQueries({
         queryKey: ["mangaFollow", "follow"],
       });

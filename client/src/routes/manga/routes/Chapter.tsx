@@ -132,18 +132,24 @@ function MangaChapter() {
   const link = split?.[0] || "";
 
   const { data: datafollow } = useQuery({
-    queryKey: ["mangaFollow", "follow"],
+    queryKey: ["mangaFollow", "follow", isUser],
     queryFn: async () => {
+      if (!isUser) return null;
       const res = await MangaFollowAPI.getFollowChapter("nettruyen", link);
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
   });
 
+  const check = datafollow == null || datafollow == undefined;
   const { mutate } = useMutation({
+    mutationKey: ["mangaFollow", "follow", "mutate", isUser, check],
     mutationFn: async () => {
+      if (!isUser) return null;
       if (!datafollow) return;
-      const chapter = Number.parseFloat(split?.[1] ?? "0");
+      const chapter = Number.parseFloat(
+        (split?.[1] ?? "0").replace("chap-", "")
+      );
 
       const data: MangaFollowUpdate = {
         currentRead: chapter,
@@ -161,7 +167,7 @@ function MangaChapter() {
         data
       );
 
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
   });
@@ -172,7 +178,11 @@ function MangaChapter() {
     isError,
   } = useQuery({
     queryKey: ["mangaLib", "manga", path],
-    queryFn: () => MangaLibAPI.chapter("nettruyen", url),
+    queryFn: async () => {
+      const res = await MangaLibAPI.chapter("nettruyen", url);
+      if (!res || res.status != 200) throw new Error();
+      return res.data
+    },
   });
 
   const { getLocal, setLocal } = useLocalStorage<string>("chapterZoom");
@@ -201,7 +211,7 @@ function MangaChapter() {
 
   useEffect(() => {
     mutate();
-  }, [isUser]);
+  }, [isUser, check, url]);
 
   function onZoom(num: number) {
     const result = chapterZoom + 5 * num;
@@ -219,9 +229,6 @@ function MangaChapter() {
       <CustomWrap>
         <div className="w-full">
           <Toolbar />
-          <div className="p-4">
-            <Skeleton variant="text" height="2rem" />
-          </div>
           <div className="w-full">
             {Array(2)
               .fill(0)
@@ -265,7 +272,7 @@ function MangaChapter() {
 
   return (
     <MangaChapterDetail
-      chapter={dataChapter.data}
+      chapter={dataChapter}
       keyCode={keyCode}
       keyFn={resetCode}
       zoom={chapterZoom}

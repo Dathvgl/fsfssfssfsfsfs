@@ -1,17 +1,66 @@
-import { Grid, Paper, Skeleton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search";
+import {
+  Divider,
+  Grid,
+  IconButton,
+  InputBase,
+  Paper,
+  Skeleton,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/router";
-import { Fragment } from "react";
+import { Link, useNavigate, useSearch } from "@tanstack/router";
+import { Fragment, useEffect, useState } from "react";
+import SimpleBar from "simplebar-react";
 import MangaLibAPI from "~/apis/MangaLibAPI";
 import CustomBox from "~/components/CustomBox";
 import CustomImage from "~/components/CustomImage";
 import CustomPagination from "~/components/CustomPagination";
+import useDebounce from "~/hooks/Debounce";
+
+type SearchProps = { page?: number };
 
 function MangaRoute() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["mangaLib", "lastest"],
-    queryFn: () => MangaLibAPI.lastest("nettruyen"),
+  const search: SearchProps = useSearch({ from: "/manga/" });
+  const navigate = useNavigate();
+
+  const [inputName, setInputName] = useState<string>("");
+  const title = useDebounce<string>(inputName);
+
+  const {
+    data: dataSearch,
+    isLoading: isLoadingSearch,
+    isError: isErrorSearch,
+    refetch,
+  } = useQuery({
+    queryKey: ["mangaLib", "lastest", "search"],
+    queryFn: async () => {
+      if (title == "") return null;
+      return await MangaLibAPI.search("nettruyen", title);
+    },
   });
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["mangaLib", "lastest", search.page],
+    queryFn: () => MangaLibAPI.lastest("nettruyen", search.page),
+  });
+
+  useEffect(() => {
+    refetch();
+  }, [title]);
+
+  function onPageChange(page: number) {
+    if (page != 1) navigate({ to: "/manga", search: { page } });
+    else navigate({ to: "/manga", search: { page: undefined } });
+  }
+
+  function clearSearch() {
+    setInputName(() => "");
+  }
+
+  function findSearch() {
+    clearSearch();
+  }
 
   if (isLoading)
     return (
@@ -29,7 +78,7 @@ function MangaRoute() {
             ))}
         </Grid>
         <br />
-        <CustomPagination total={10} />
+        <CustomPagination total={10} onPageChange={() => {}} />
       </CustomBox>
     );
   if (isError) return <div>Error</div>;
@@ -39,6 +88,78 @@ function MangaRoute() {
 
   return (
     <CustomBox>
+      <div className="row-center">
+        <Paper
+          component="form"
+          className="max-sm:w-[9%] sm:w-[400px] relative"
+          sx={{
+            p: "2px 4px",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            value={inputName}
+            onChange={(event) => setInputName(() => event.target.value)}
+            placeholder="Search name"
+            inputProps={{ "aria-label": "search name" }}
+          />
+          <IconButton
+            type="button"
+            sx={{ p: "10px" }}
+            aria-label="search"
+            onClick={findSearch}
+          >
+            <SearchIcon />
+          </IconButton>
+          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+          <IconButton
+            color="primary"
+            sx={{ p: "10px" }}
+            aria-label="directions"
+            onClick={clearSearch}
+          >
+            <CloseIcon />
+          </IconButton>
+          {dataSearch && !isLoadingSearch && !isErrorSearch && (
+            <SimpleBar className="absolute mt-1 top-full left-0 w-full h-64 z-10 rounded-lg bg-white overflow-y-auto">
+              {dataSearch.data.data.map((item, index) => {
+                const url = new URL(item.href);
+                const path = url.pathname.replace("/truyen-tranh/", "");
+
+                return (
+                  <Link
+                    key={index}
+                    to="/manga/$path"
+                    params={{ path }}
+                    className="border p-2 flex items-center gap-2 hover:bg-black hover:bg-opacity-10"
+                  >
+                    <div className="w-16 h-16 rounded-lg overflow-hidden border border-black border-opacity-20 drop-shadow-lg">
+                      <CustomImage
+                        className="h-full bg-slate-300"
+                        src={item.image_thumbnail}
+                      />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="line-clamp-2 font-bold">{item.title}</div>
+                      {item.chapters ? (
+                        <div className="row-between">
+                          <div>{item.chapters[0].content}</div>
+                          <i>{item.chapters[0].time}</i>
+                        </div>
+                      ) : (
+                        <div />
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </SimpleBar>
+          )}
+        </Paper>
+      </div>
+      <br />
       <Grid container spacing={3} justifyContent="space-around">
         {mangas.map((item, index) => {
           const url = new URL(item.href);
@@ -88,7 +209,7 @@ function MangaRoute() {
         })}
       </Grid>
       <br />
-      <CustomPagination total={totalPage} />
+      <CustomPagination total={totalPage} onPageChange={onPageChange} />
     </CustomBox>
   );
 }

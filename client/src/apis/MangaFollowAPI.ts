@@ -3,14 +3,15 @@ import {
   MangaFollowFollow,
   MangaFollowInfo,
   MangaFollowResponse,
-  MangaFollowUpdate
+  MangaFollowUpdate,
 } from "~/types/mongo/mangaFollowDB";
 import { httpClientPrivate } from "~/utils/HttpClient";
 
 abstract class MangaFollowAPI {
-  static getFollows(type: MangaType) {
+  static getFollows(type: MangaType, limit: number, offset: number) {
     return httpClientPrivate.get<MangaFollowResponse>(
-      `api/mangaFollow/getFollows/${type}`
+      `api/mangaFollow/getFollows/${type}`,
+      { params: { limit, offset } }
     );
   }
 

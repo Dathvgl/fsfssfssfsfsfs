@@ -29,7 +29,11 @@ function MangaDetail() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["mangaLib", "manga", path],
-    queryFn: () => MangaLibAPI.manga("nettruyen", url),
+    queryFn: async () => {
+      const res = await MangaLibAPI.manga("nettruyen", url);
+      if (!res || res.status != 200) throw new Error();
+      return res.data;
+    },
   });
 
   if (isLoading)
@@ -61,7 +65,7 @@ function MangaDetail() {
     );
   if (isError) return <div>Error</div>;
 
-  const manga = data.data;
+  const manga = data;
 
   return (
     <CustomBox>

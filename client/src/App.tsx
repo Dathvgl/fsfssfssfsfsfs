@@ -17,6 +17,9 @@ import { customLazy } from "~/utils/CustomLazy";
 import { httpClientPrivate } from "~/utils/HttpClient";
 
 const HomeRoute = customLazy(() => import("~/routes/home/Home"));
+const UserMangaFollowRoute = customLazy(
+  () => import("~/routes/user/routes/MangaFollow")
+);
 const TodoRoute = customLazy(() => import("~/routes/todo/Todo"));
 const MangaRoute = customLazy(() => import("~/routes/manga/Manga"));
 const MangaDetail = customLazy(
@@ -68,31 +71,27 @@ function RootApp() {
   );
 }
 
-const rootRoute = new RootRoute({
-  // component: () => (
-  //   <>
-  //     <LayoutBase />
-  //     <ToastContainer
-  //       position="bottom-left"
-  //       autoClose={1000}
-  //       hideProgressBar
-  //       newestOnTop={false}
-  //       closeOnClick
-  //       rtl={false}
-  //       pauseOnFocusLoss
-  //       draggable
-  //       pauseOnHover
-  //       theme="dark"
-  //     />
-  //   </>
-  // ),
-  component: RootApp,
-});
+const rootRoute = new RootRoute({ component: RootApp });
 
 const homeRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/",
   component: HomeRoute,
+});
+
+const userRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/user",
+});
+
+const userMangaFollowRoute = new Route({
+  getParentRoute: () => userRoute,
+  path: "/mangaFollow",
+  component: () => (
+    <LayoutAuth>
+      <UserMangaFollowRoute />
+    </LayoutAuth>
+  ),
 });
 
 const todoRoute = new Route({
@@ -130,6 +129,7 @@ const mangaChapterRoute = new Route({
 
 const routeTree = rootRoute.addChildren([
   homeRoute,
+  userRoute.addChildren([userMangaFollowRoute]),
   todoRoute,
   mangaRoute.addChildren([
     mangaIndexRoute,

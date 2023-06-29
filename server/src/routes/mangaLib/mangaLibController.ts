@@ -1,11 +1,8 @@
 import { Request, Response } from "express";
 import { CustomError } from "models/errror";
 import { Manga } from "models/mangaLib/manga";
-import { Cookies } from "types/jwt";
 import { Genre, MangaType } from "types/mangaLib";
 import { numCheckUd, strCheck, strCheckUd } from "utils/check";
-import { secretToken } from "utils/constants/jwtConstants";
-import { validJWT, verifyJWT } from "utils/jwtUtils";
 
 const mangaTypes: MangaType[] = ["nettruyen", "toonily"];
 

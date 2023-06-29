@@ -1,4 +1,5 @@
 import { AccountCircle } from "@mui/icons-material";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import {
   Avatar,
@@ -8,14 +9,16 @@ import {
   IconButton,
   MenuItem,
 } from "@mui/material";
+import { useNavigate } from "@tanstack/router";
 import { useEffect, useRef, useState } from "react";
+import { logout } from "~/redux/slices/user";
+import { useAppDispatch, useAppSelector } from "~/redux/store";
+import UserInit from "~/routes/user/init/Init";
 import ActionsBadge from "./components/Badge";
 import ActionsMenu from "./components/Menu";
-import UserInit from "~/routes/user/init/Init";
-import { useAppDispatch, useAppSelector } from "~/redux/store";
-import { logout } from "~/redux/slices/user";
 
 function LayoutBaseActions() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isUser } = useAppSelector((state) => state.user);
 
@@ -64,6 +67,8 @@ function LayoutBaseActions() {
     setMobileAnchorEl(event.currentTarget);
   }
 
+  const navMangaFollow = () => navigate({ to: "/user/mangaFollow" });
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <ActionsMenu
@@ -73,6 +78,14 @@ function LayoutBaseActions() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem
+        onClick={async () => {
+          handleMenuClose();
+          await navMangaFollow();
+        }}
+      >
+        Manga Follow
+      </MenuItem>
       <MenuItem onClick={() => dispatch(logout({})).then(handleMenuClose)}>
         Logout
       </MenuItem>
@@ -92,16 +105,21 @@ function LayoutBaseActions() {
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={toggleDrawer(true)}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
+        <IconButton size="large" color="inherit" aria-haspopup="true">
           <AccountCircle />
         </IconButton>
         <p>Profile</p>
+      </MenuItem>
+      <MenuItem
+        onClick={async () => {
+          handleMenuClose();
+          await navMangaFollow();
+        }}
+      >
+        <IconButton size="large" color="inherit" aria-haspopup="true">
+          <LibraryBooksIcon />
+        </IconButton>
+        <p>Manga Follow</p>
       </MenuItem>
     </ActionsMenu>
   );
@@ -133,6 +151,7 @@ function LayoutBaseActions() {
       <Box sx={{ display: { xs: "flex", md: "none" } }}>
         <IconButton
           size="large"
+          color="inherit"
           aria-label="show more"
           aria-controls={mobileMenuId}
           aria-haspopup="true"
@@ -141,7 +160,6 @@ function LayoutBaseActions() {
             if (!drawer) setDrawer(() => true);
             else handleMobileMenuOpen(event);
           }}
-          color="inherit"
         >
           <MoreIcon />
         </IconButton>

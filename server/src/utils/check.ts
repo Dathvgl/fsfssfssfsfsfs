@@ -12,14 +12,16 @@ export function strCheckUd(str: unknown) {
 
 export function numCheck(num: unknown) {
   if (typeof num != "string") throw new CustomError("Invalid number", 500);
-  if (!Number.parseInt(num)) throw new CustomError("Invalid number", 500);
+  if (Number.parseInt(num) != 0 && !Number.parseInt(num))
+    throw new CustomError("Invalid number", 500);
   return Number.parseInt(num);
 }
 
 export function numCheckUd(num: unknown) {
   if (typeof num == "undefined") return undefined;
   if (typeof num != "string") throw new CustomError("Invalid number", 500);
-  if (!Number.parseInt(num)) throw new CustomError("Invalid number", 500);
+  if (Number.parseInt(num) != 0 && !Number.parseInt(num))
+    throw new CustomError("Invalid number", 500);
   return Number.parseInt(num);
 }
 

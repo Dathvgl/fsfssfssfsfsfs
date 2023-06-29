@@ -18,7 +18,7 @@ function TodoList() {
     queryKey: ["todo"],
     queryFn: async () => {
       const res = await TodoAPI.getTodos();
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
   });

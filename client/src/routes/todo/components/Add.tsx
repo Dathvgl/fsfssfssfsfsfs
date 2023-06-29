@@ -51,7 +51,7 @@ function TodoAdd() {
   const { mutate } = useMutation({
     mutationFn: async (data: TodoInfo) => {
       const res = await TodoAPI.postTodo(data);
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
     onSuccess: () => {

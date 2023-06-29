@@ -10,6 +10,7 @@ import {
   MangaFollowOmit,
   MangaFollowUpdate,
 } from "types/mongo/mangaFollowDB";
+import { numCheck } from "utils/check";
 import { secretToken } from "utils/constants/jwtConstants";
 import { nowISO } from "utils/date";
 import { parseIProjection } from "utils/interface";
@@ -21,6 +22,11 @@ export abstract class MangaFollowController {
     validJWT(cookies);
 
     const { type } = req.params;
+    const query = req.query;
+
+    const limit = numCheck(query?.limit);
+    const offset = numCheck(query?.offset);
+
     const userId = verifyJWT(cookies!.jwt, secretToken["refresh"]);
 
     const data = await mangaFollowCollection
@@ -34,6 +40,8 @@ export abstract class MangaFollowController {
                   relationships: { $elemMatch: { id: userId } },
                 },
               },
+              { $limit: limit },
+              { $skip: offset },
             ],
             total: [
               {
@@ -48,7 +56,7 @@ export abstract class MangaFollowController {
         {
           $project: {
             data: 1,
-            count: {
+            total: {
               $let: {
                 vars: { prop: { $first: "$total" } },
                 in: "$$prop.total",

@@ -14,7 +14,7 @@ function TodoRelationship(props: {
     queryKey: ["todo", "relationships"],
     queryFn: async () => {
       const res = await TodoAPI.getTodoRelationships();
-      if (res.status != 200) throw new Error();
+      if (!res || res.status != 200) throw new Error();
       return res.data;
     },
   });
