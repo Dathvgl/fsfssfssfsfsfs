@@ -11,9 +11,6 @@
   "keywords": [],
   "author": "fsfssfssfsfsfs",
   "license": "ISC",
-  "engines": {
-    "node": ">=16.3.0"
-  },
   "dependencies": {
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
