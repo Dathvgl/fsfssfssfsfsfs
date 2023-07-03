@@ -5,5 +5,6 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 WORKDIR /usr/src/app
 COPY . .
-RUN npm install \ && npm run build 
-CMD ["npm", "start"]
+RUN yarn install --frozen-lockfile
+RUN yarn build
+CMD ["yarn", "start"]
