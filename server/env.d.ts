@@ -8,6 +8,7 @@ declare global {
       REFRESH_TOKEN_SECRET?: string;
       MONGO_URL?: string;
       MONGO_DB?: string;
+      ORIGIN_CORS?: string;
       NETTRUYEN?: string;
     }
   }
