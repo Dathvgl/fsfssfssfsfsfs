@@ -13,9 +13,9 @@ export type BaseResponse = {
   total: { total: number }[];
 };
 
-type RelationshipType = "user" | "todo" | "mangaFollow";
+export type RelationshipType = "user" | "cover" | "todo" | "mangaFollow";
 
-type RelationshipMongo = {
+export type RelationshipMongo = {
   id: string;
   type: RelationshipType;
 };

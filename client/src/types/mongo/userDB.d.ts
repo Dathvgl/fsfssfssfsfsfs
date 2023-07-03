@@ -1,3 +1,4 @@
+import { CoverUpdate } from "./cover";
 import { BaseMongo } from "./mongoDB";
 
 export type UserMongo = BaseMongo & {
@@ -19,3 +20,14 @@ export type UserProfile = Omit<
   UserMongo,
   "email" | "password" | "refreshToken"
 >;
+
+export type UserUpdate = {
+  username?: string;
+  cover?: CoverUpdate;
+};
+
+export type UserPerson = {
+  _id: string;
+  username: string;
+  base64: string;
+};

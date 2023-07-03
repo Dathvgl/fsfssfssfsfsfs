@@ -5,6 +5,7 @@ import tryCatch from "utils/tryCatch";
 
 const userRoute = Router();
 
+userRoute.get("/userPerson/:id", tryCatch(UserController.userPerson));
 userRoute.post("/register", tryCatch(UserController.register));
 userRoute.post("/login", tryCatch(UserController.login));
 userRoute.post("/logout", authProtect, tryCatch(UserController.logout));

@@ -1,8 +1,8 @@
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AutoStoriesSharpIcon from "@mui/icons-material/AutoStoriesSharp";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LayersIcon from "@mui/icons-material/Layers";
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import {
   ListItemButton,
@@ -38,12 +38,9 @@ export const MainList = () => {
       <Link to="/manga">
         <CustomInfo title="Manga" icon={<AutoStoriesSharpIcon />} />
       </Link>
-      <ListItemButton>
-        <ListItemIcon>
-          <BarChartIcon />
-        </ListItemIcon>
-        <ListItemText primary="Reports" />
-      </ListItemButton>
+      <Link to="/room">
+        <CustomInfo title="Room" icon={<MeetingRoomIcon />} />
+      </Link>
       <ListItemButton>
         <ListItemIcon>
           <LayersIcon />

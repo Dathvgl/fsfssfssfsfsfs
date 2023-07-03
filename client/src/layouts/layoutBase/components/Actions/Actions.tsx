@@ -2,18 +2,18 @@ import { AccountCircle } from "@mui/icons-material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import {
-  Avatar,
   Box,
   Button,
   Drawer,
   IconButton,
-  MenuItem,
+  MenuItem
 } from "@mui/material";
 import { useNavigate } from "@tanstack/router";
 import { useEffect, useRef, useState } from "react";
 import { logout } from "~/redux/slices/user";
 import { useAppDispatch, useAppSelector } from "~/redux/store";
 import UserInit from "~/routes/user/init/Init";
+import ActionsAvatar from "./components/Avatar";
 import ActionsBadge from "./components/Badge";
 import ActionsMenu from "./components/Menu";
 
@@ -67,6 +67,7 @@ function LayoutBaseActions() {
     setMobileAnchorEl(event.currentTarget);
   }
 
+  const navProfile = () => navigate({ to: "/user/profile" });
   const navMangaFollow = () => navigate({ to: "/user/mangaFollow" });
 
   const menuId = "primary-search-account-menu";
@@ -77,7 +78,14 @@ function LayoutBaseActions() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem
+        onClick={async () => {
+          handleMenuClose();
+          await navProfile();
+        }}
+      >
+        Profile
+      </MenuItem>
       <MenuItem
         onClick={async () => {
           handleMenuClose();
@@ -104,7 +112,12 @@ function LayoutBaseActions() {
         <ActionsBadge total={4} size="large" />
         <p>Notifications</p>
       </MenuItem>
-      <MenuItem onClick={toggleDrawer(true)}>
+      <MenuItem
+        onClick={async () => {
+          handleMenuClose();
+          await navProfile();
+        }}
+      >
         <IconButton size="large" color="inherit" aria-haspopup="true">
           <AccountCircle />
         </IconButton>
@@ -134,7 +147,7 @@ function LayoutBaseActions() {
             aria-haspopup="true"
             onClick={handleMenuOpen}
           >
-            <Avatar />
+            <ActionsAvatar />
           </IconButton>
         ) : (
           <Button
@@ -164,8 +177,8 @@ function LayoutBaseActions() {
           <MoreIcon />
         </IconButton>
       </Box>
-      {renderMenu}
-      {renderMobileMenu}
+      {isUser && <>{renderMenu}</>}
+      {isUser && <>{renderMobileMenu}</>}
       <Drawer anchor="right" open={drawer} onClose={toggleDrawer(false)}>
         <Box className="max-[600px]:w-screen" role="presentation">
           <div ref={drawerRef}>

@@ -4,9 +4,19 @@ import jwt from "jsonwebtoken";
 import { CustomError } from "models/errror";
 import { userCollection } from "models/mongo";
 import { ObjectId } from "mongodb";
+import { CoverController } from "routes/cover/coverController";
 import { Cookies, JwtPayloadExtra } from "types/jwt";
-import { UserMongo, UserOmit, UserProfile } from "types/mongo/userDB";
-import { expireMiliToken, expireToken, secretToken } from "utils/constants/jwtConstants";
+import {
+  UserMongo,
+  UserOmit,
+  UserProfile,
+  UserUpdate,
+} from "types/mongo/userDB";
+import {
+  expireMiliToken,
+  expireToken,
+  secretToken,
+} from "utils/constants/jwtConstants";
 import { nowISO } from "utils/date";
 import { parseIProjection } from "utils/interface";
 import { initJWT, validJWT, verifyJWT } from "utils/jwtUtils";
@@ -31,9 +41,56 @@ const initBycrypt = async (str: string) => {
 };
 
 export abstract class UserController {
+  static async userPerson(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const data = await userCollection
+      .aggregate([
+        { $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+        {
+          $project: {
+            username: 1,
+            relationships: {
+              $filter: {
+                input: "$relationships",
+                as: "array",
+                cond: { $eq: ["$$array.type", "cover"] },
+              },
+            },
+          },
+        },
+        { $unwind: { path: "$relationships" } },
+        { $addFields: { coverId: { $toObjectId: "$relationships.id" } } },
+        {
+          $lookup: {
+            from: "cover",
+            localField: "coverId",
+            foreignField: "_id",
+            as: "result",
+          },
+        },
+        { $unwind: { path: "$result" } },
+        { $addFields: { base64: "$result.base64" } },
+        {
+          $project: {
+            coverId: 0,
+            result: 0,
+            relationships: 0,
+          },
+        },
+      ])
+      .next()
+      .catch(() => {
+        throw new CustomError("Cannot get user", 500);
+      });
+
+    res.status(200).json(data);
+  }
+
   static async register(req: Request, res: Response) {
     const { username, email, password } = req.body;
 
+    const coverId = await CoverController.postCover();
     const newPassword = await initBycrypt(password);
 
     const now = nowISO();
@@ -46,7 +103,12 @@ export abstract class UserController {
       updatedAt: now,
       loginAt: now,
       logoutAt: now,
-      relationships: [],
+      relationships: [
+        {
+          id: coverId,
+          type: "cover",
+        },
+      ],
     };
 
     await userCollection
@@ -166,11 +228,9 @@ export abstract class UserController {
     const userId = verifyJWT(cookies!.jwt, secretToken["refresh"]);
 
     const projection = parseIProjection<UserProfile>([
+      "_id",
       "username",
       "createdAt",
-      "updatedAt",
-      "loginAt",
-      "logoutAt",
       "relationships",
     ]);
 
@@ -184,24 +244,25 @@ export abstract class UserController {
   }
 
   static async putProfile(req: Request, res: Response) {
-    const updates = req.body as UserMongo;
-    let password = undefined;
+    const cookies: Cookies = req.cookies;
+    validJWT(cookies);
 
-    try {
-      if (updates.password) {
-        password = await initBycrypt(updates.password);
-      }
+    const userId = verifyJWT(cookies!.jwt, secretToken["refresh"]);
 
-      // const doc = await userCollection.findOneAndUpdate(
-      //   { _id: new ObjectId(req.user?._id) },
-      //   { $set: { ...updates, password } }
-      // );
-
-      // const user = doc.value as UserMongo | null;
-      // res.status(200).json(user);
-    } catch (error) {
-      console.log(error);
-      res.status(404).send("User not found");
+    const updates = req.body as UserUpdate;
+    if (!updates || Object.keys(updates).length == 0) {
+      throw new CustomError("Cannot update profile", 500);
     }
+
+    const { cover, ...rest } = updates;
+
+    if (cover) await CoverController.putCover(cover);
+
+    await userCollection
+      .updateOne({ _id: new ObjectId(userId) }, { $set: { ...rest } })
+      .then(() => res.status(200).send("Update profile success"))
+      .catch(() => {
+        throw new CustomError("Cannot update profile", 500);
+      });
   }
 }

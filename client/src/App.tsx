@@ -17,6 +17,10 @@ import { customLazy } from "~/utils/CustomLazy";
 import { httpClientPrivate } from "~/utils/HttpClient";
 
 const HomeRoute = customLazy(() => import("~/routes/home/Home"));
+const ErrorRoute = customLazy(() => import("~/routes/Error"));
+const UserProfileRoute = customLazy(
+  () => import("~/routes/user/routes/Profile")
+);
 const UserMangaFollowRoute = customLazy(
   () => import("~/routes/user/routes/MangaFollow")
 );
@@ -26,6 +30,8 @@ const MangaDetail = customLazy(
   () => import("~/routes/manga/routes/detail/Detail")
 );
 const MangaChapter = customLazy(() => import("~/routes/manga/routes/Chapter"));
+const RoomRoute = customLazy(() => import("~/routes/room/Room"));
+const RoomDetail = customLazy(() => import("~/routes/room/routes/Detail"));
 
 function RootApp() {
   const navigate = useNavigate();
@@ -79,9 +85,21 @@ const homeRoute = new Route({
   component: HomeRoute,
 });
 
+const errorRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/*",
+  component: ErrorRoute,
+});
+
 const userRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/user",
+});
+
+const userProfileRoute = new Route({
+  getParentRoute: () => userRoute,
+  path: "/profile",
+  component: UserProfileRoute,
 });
 
 const userMangaFollowRoute = new Route({
@@ -127,15 +145,38 @@ const mangaChapterRoute = new Route({
   component: MangaChapter,
 });
 
+const roomRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/room",
+});
+
+const roomIndexRoute = new Route({
+  getParentRoute: () => roomRoute,
+  path: "/",
+  component: RoomRoute,
+});
+
+const roomDetailRoute = new Route({
+  getParentRoute: () => roomRoute,
+  path: "$id",
+  component: () => (
+    <LayoutAuth>
+      <RoomDetail />
+    </LayoutAuth>
+  ),
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
-  userRoute.addChildren([userMangaFollowRoute]),
+  errorRoute,
+  userRoute.addChildren([userProfileRoute, userMangaFollowRoute]),
   todoRoute,
   mangaRoute.addChildren([
     mangaIndexRoute,
     mangaDetailRoute,
     mangaChapterRoute,
   ]),
+  roomRoute.addChildren([roomIndexRoute, roomDetailRoute]),
 ]);
 
 const router = new Router({ routeTree });

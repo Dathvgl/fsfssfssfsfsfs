@@ -94,7 +94,7 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 function LayoutBase() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
