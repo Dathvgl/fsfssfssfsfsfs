@@ -24,6 +24,7 @@ export class Nettruyen implements AbstractMangaFactory {
     this.browser = puppeteer.launch({
       headless: "new",
       args: [
+        "--disable-dev-shm-usage",
         "--disable-setupid-sandbox",
         "--no-sandbox",
         "--single-process",
