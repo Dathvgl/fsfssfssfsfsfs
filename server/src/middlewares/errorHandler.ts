@@ -14,7 +14,7 @@ function errorHandler(
     res.status(error.response?.status ?? 400).send(error.message);
   } else if (error instanceof CustomError) {
     res.status(error.statusCode).send(error.message);
-  } else res.status(400).send("Error handler");
+  } else res.status(400).send(error);
 }
 
 export default errorHandler;
