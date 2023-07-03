@@ -23,6 +23,16 @@ export class Nettruyen implements AbstractMangaFactory {
     this.baseUrl = baseUrl;
     this.browser = puppeteer.launch({
       headless: "new",
+      args: [
+        "--disable-setupid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV == "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
     });
     this.all_genres = [] as Genre[];
   }
