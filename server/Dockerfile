@@ -5,5 +5,5 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
 
 WORKDIR /usr/src/app
 COPY . .
-RUN yarn install \ && yarn build 
-CMD ["yarn", "start"]
+RUN npm install \ && npm run build 
+CMD ["npm", "start"]
