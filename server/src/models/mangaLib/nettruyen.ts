@@ -2,7 +2,7 @@ import {
   NETTRUYEN_SORT_FILTER,
   NETTRUYEN_STATUS_FILTER,
 } from "manga-lib/dist/src/constants/filter";
-import puppeteer, { Browser } from "puppeteer";
+import puppeteer, { Browser, Page } from "puppeteer";
 import {
   AbstractMangaFactory,
   Chapter,
@@ -14,6 +14,25 @@ import {
 } from "types/mangaLib";
 import { notNull } from "utils/check";
 
+async function abortPuppeteer(page: Page) {
+  await page.setRequestInterception(true);
+  page.on("request", (request) => {
+    switch (request.resourceType()) {
+      case "ping":
+      case "image":
+      case "script":
+      case "media":
+      case "font":
+      case "other":
+        request.abort();
+        break;
+      default:
+        request.continue();
+        break;
+    }
+  });
+}
+
 export class Nettruyen implements AbstractMangaFactory {
   baseUrl: string;
   all_genres: Genre[];
@@ -24,12 +43,7 @@ export class Nettruyen implements AbstractMangaFactory {
     this.browser = puppeteer.launch({
       headless: "new",
       args: [
-        // "--disable-dev-shm-usage",
-        // "--disable-setupid-sandbox",
-        // "--no-sandbox",
-        // "--single-process",
-        // "--no-zygote",
-        "--disable-speech-api",
+        "--autoplay-policy=user-gesture-required",
         "--disable-background-networking",
         "--disable-background-timer-throttling",
         "--disable-backgrounding-occluded-windows",
@@ -50,6 +64,7 @@ export class Nettruyen implements AbstractMangaFactory {
         "--disable-prompt-on-repost",
         "--disable-renderer-backgrounding",
         "--disable-setuid-sandbox",
+        "--disable-speech-api",
         "--disable-sync",
         "--hide-scrollbars",
         "--ignore-gpu-blacklist",
@@ -78,8 +93,10 @@ export class Nettruyen implements AbstractMangaFactory {
       `${this.baseUrl}/tim-truyen?keyword=${keyword}${
         page > 1 ? `&page=${page}` : ``
       }`,
-      { waitUntil: "networkidle0" }
+      { waitUntil: "domcontentloaded", timeout: 0 }
     );
+
+    await abortPuppeteer(_page);
 
     const element = await _page.$$(
       "#ctl00_divCenter > div.Module.Module-170 > div > div.items > div > div.item > figure"
@@ -189,7 +206,14 @@ export class Nettruyen implements AbstractMangaFactory {
     } else if (page !== undefined) {
       path += `?page=${page}`;
     }
-    await _page.goto(`${this.baseUrl}${path}`, { waitUntil: "networkidle0" });
+
+    await _page.goto(`${this.baseUrl}${path}`, {
+      waitUntil: "domcontentloaded",
+      timeout: 0,
+    });
+
+    await abortPuppeteer(_page);
+
     const element = await _page.$$(
       "#ctl00_divCenter > div.Module.Module-170 > div > div.items > div > div.item > figure"
     );
@@ -282,10 +306,18 @@ export class Nettruyen implements AbstractMangaFactory {
     path = path !== undefined ? path : "";
 
     const _page = await (await this.browser).newPage();
-    await _page.goto(url_chapter, { waitUntil: "networkidle0" });
+
+    await _page.goto(url_chapter, {
+      waitUntil: "domcontentloaded",
+      timeout: 0,
+    });
+
+    await abortPuppeteer(_page);
+
     const content = await _page.$(
       "#ctl00_divCenter > div > div.reading-detail.box_doc"
     );
+
     const title = notNull(
       await _page.$eval(
         "#ctl00_divCenter > div > div:nth-child(1) > div.top > h1",
@@ -370,7 +402,8 @@ export class Nettruyen implements AbstractMangaFactory {
 
   async getDetailManga(url: string): Promise<ResponseDetailManga> {
     const _page = await (await this.browser).newPage();
-    await _page.goto(url, { waitUntil: "networkidle0" });
+    await _page.goto(url, { waitUntil: "domcontentloaded", timeout: 0 });
+    await abortPuppeteer(_page);
     const content = await _page.$("#ctl00_divCenter");
     const title = await content!.$eval("article > h1", (el) => el.textContent);
     const path = url.substring(`${this.baseUrl}`.length);
@@ -498,8 +531,11 @@ export class Nettruyen implements AbstractMangaFactory {
   async getListLatestUpdate(page = 1): Promise<ResponseListManga> {
     const _page = await (await this.browser).newPage();
     await _page.goto(`${this.baseUrl}${page > 1 ? `/?page=${page}` : ``}`, {
-      waitUntil: "networkidle0",
+      waitUntil: "domcontentloaded",
+      timeout: 0,
     });
+
+    await abortPuppeteer(_page);
 
     const element = await _page.$$(
       "#ctl00_divCenter > div > div > div.items > div.row > div.item"
