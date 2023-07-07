@@ -1,7 +1,9 @@
-import { Alert, Paper } from "@mui/material";
+import { Alert, Button, Paper } from "@mui/material";
 import { ReactNode } from "react";
-import { CustomWrap } from "~/components/CustomBox";
+import { authMusicUrl } from "~/apis/MusicAPI";
+import { CustomScreen, CustomWrap } from "~/components/CustomBox";
 import { useAppSelector } from "~/redux/store";
+import MusicRoute from "~/routes/music/Music";
 
 export function LayoutAuth(props: { children: ReactNode }) {
   const { children } = props;
@@ -17,5 +19,21 @@ export function LayoutAuth(props: { children: ReactNode }) {
         </Paper>
       </div>
     </CustomWrap>
+  );
+}
+
+export function LayoutAuthMusic() {
+  const code = new URLSearchParams(window.location.search).get("code");
+
+  return code ? (
+    <MusicRoute code={code} />
+  ) : (
+    <CustomScreen>
+      <div className="h-full row-center">
+        <Button variant="contained" href={authMusicUrl}>
+          Into Spotify
+        </Button>
+      </div>
+    </CustomScreen>
   );
 }

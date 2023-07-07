@@ -23,6 +23,17 @@ export function CustomWrap(props: { children?: ReactNode }) {
   );
 }
 
+export function CustomScreen(props: { children?: ReactNode }) {
+  const { children } = props;
+
+  return <CustomWrap>
+    <div className="flex flex-col w-full h-screen">
+      <Toolbar />
+      {children}
+    </div>
+  </CustomWrap>;
+}
+
 function CustomBox(props: { children?: ReactNode }) {
   const { children } = props;
 

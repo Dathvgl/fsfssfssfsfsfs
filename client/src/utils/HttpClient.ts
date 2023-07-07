@@ -4,13 +4,14 @@ import UserAPI from "~/apis/UserAPI";
 import { envs } from "./Enviroments";
 import { store } from "~/redux/store";
 import { empty, getProfile } from "~/redux/slices/user";
+import MusicAPI from "~/apis/MusicAPI";
 
 class HttpClient {
   instance: AxiosInstance;
 
-  constructor() {
+  constructor(baseUrl?: string) {
     this.instance = axios.create({
-      baseURL: envs.NODE_SERVER,
+      baseURL: baseUrl ?? envs.NODE_SERVER,
       headers: { "Content-Type": "application/json" },
     });
   }
@@ -29,12 +30,29 @@ httpClientPrivate.interceptors.response.use(
         "Authorization"
       ] = `Bearer ${data.token}`;
       toast.info("Refresh token");
-      store.dispatch(getProfile({}))
+      store.dispatch(getProfile({}));
     } catch (error) {
       const { response } = error as AxiosError;
       toast.error(response?.data as string);
-      store.dispatch(empty())
+      store.dispatch(empty());
       // window.location.href = "/"
+    }
+  }
+);
+
+export const httpClientMusic = new HttpClient().instance;
+
+httpClientMusic.interceptors.response.use(
+  (res) => res,
+  async () => {
+    try {
+      const { data } = await MusicAPI.refresh();
+      httpClientMusic.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${data.access_token}`;
+    } catch (error) {
+      const { response } = error as AxiosError;
+      toast.error(response?.data as string);
     }
   }
 );

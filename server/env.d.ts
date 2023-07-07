@@ -10,6 +10,9 @@ declare global {
       MONGO_DB?: string;
       ORIGIN_CORS?: string;
       NETTRUYEN?: string;
+      SPOTIFY_REDIRECT_URI?: string;
+      SPOTIFY_CLIENT_ID?: string;
+      SPOTIFY_CLIENT_SECRET?: string;
     }
   }
 }

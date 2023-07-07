@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import SendIcon from "@mui/icons-material/Send";
-import { Box, Button, InputBase, Paper, Toolbar } from "@mui/material";
+import { Box, Button, InputBase, Paper } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/router";
 import { useEffect, useState } from "react";
@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import SimpleBar from "simplebar-react";
 import { ZodType, z } from "zod";
 import RoomAPI from "~/apis/RoomAPI";
-import { CustomWrap } from "~/components/CustomBox";
+import { CustomScreen } from "~/components/CustomBox";
 import CustomUserDot from "~/components/CustomUserDot/CustomUserDot";
 import { useAppSelector } from "~/redux/store";
 import { RoomChatResponse } from "~/types/mongo/roomDB";
@@ -138,64 +138,61 @@ function RoomDetailValid({ id }: { id?: string }) {
   if (isError || !data) return <></>;
 
   return (
-    <CustomWrap>
-      <div className="flex flex-col w-full h-screen">
-        <Toolbar />
-        <Paper
-          className="flex-1 flex gap-4 divide-x-2 divide-black"
-          sx={{ p: 2 }}
-        >
-          <div className="flex-1 min-w-0 flex flex-col">
-            <div className="flex justify-between">
-              <div className="font-bold text-2xl">{data.title}</div>
-              <Button variant="contained">Leave</Button>
-            </div>
-            <br />
-            <SimpleBar className="flex-1 p-2 bg-slate-400 flex flex-col gap-2 overflow-auto border border-black rounded">
-              <DetailChat chats={chats} />
-              {typing && <CustomUserDot />}
-            </SimpleBar>
-            <br />
-            <Box
-              className="flex items-center gap-4"
-              component="form"
-              autoComplete="off"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <InputBase
-                className="border flex-1 border-black px-2 rounded"
-                placeholder="Message"
-                {...register("message", {
-                  onChange(_) {
-                    socket.emit("typingMessageClient", { id, typing: true });
-
-                    if (inputTime) clearTimeout(inputTime);
-
-                    setInputTime(
-                      setTimeout(() => {
-                        socket.emit("typingMessageClient", {
-                          id,
-                          typing: false,
-                        });
-                      }, 500)
-                    );
-                  },
-                })}
-              />
-              <Button
-                sx={{ px: 1.5, py: 0.5 }}
-                type="submit"
-                variant="contained"
-                startIcon={<SendIcon />}
-              >
-                Send
-              </Button>
-            </Box>
+    <CustomScreen>
+      <Paper
+        className="flex-1 flex gap-4 divide-x-2 divide-black"
+        sx={{ p: 2 }}
+      >
+        <div className="flex-1 min-w-0 flex flex-col">
+          <div className="flex justify-between">
+            <div className="font-bold text-2xl">{data.title}</div>
+            <Button variant="contained">Leave</Button>
           </div>
-          <RoomPanel id={id} />
-        </Paper>
-      </div>
-    </CustomWrap>
+          <br />
+          <SimpleBar className="flex-1 p-2 bg-slate-400 flex flex-col gap-2 overflow-auto border border-black rounded">
+            <DetailChat chats={chats} />
+            {typing && <CustomUserDot />}
+          </SimpleBar>
+          <br />
+          <Box
+            className="flex items-center gap-4"
+            component="form"
+            autoComplete="off"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <InputBase
+              className="border flex-1 border-black px-2 rounded"
+              placeholder="Message"
+              {...register("message", {
+                onChange(_) {
+                  socket.emit("typingMessageClient", { id, typing: true });
+
+                  if (inputTime) clearTimeout(inputTime);
+
+                  setInputTime(
+                    setTimeout(() => {
+                      socket.emit("typingMessageClient", {
+                        id,
+                        typing: false,
+                      });
+                    }, 500)
+                  );
+                },
+              })}
+            />
+            <Button
+              sx={{ px: 1.5, py: 0.5 }}
+              type="submit"
+              variant="contained"
+              startIcon={<SendIcon />}
+            >
+              Send
+            </Button>
+          </Box>
+        </div>
+        <RoomPanel id={id} />
+      </Paper>
+    </CustomScreen>
   );
 }
 

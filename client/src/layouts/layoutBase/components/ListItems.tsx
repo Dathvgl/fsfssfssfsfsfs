@@ -1,14 +1,14 @@
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AutoStoriesSharpIcon from "@mui/icons-material/AutoStoriesSharp";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import LayersIcon from "@mui/icons-material/Layers";
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader
+  ListSubheader,
 } from "@mui/material";
 import { Link } from "@tanstack/router";
 import { ReactNode } from "react";
@@ -41,12 +41,9 @@ export const MainList = () => {
       <Link to="/room">
         <CustomInfo title="Room" icon={<MeetingRoomIcon />} />
       </Link>
-      <ListItemButton>
-        <ListItemIcon>
-          <LayersIcon />
-        </ListItemIcon>
-        <ListItemText primary="Integrations" />
-      </ListItemButton>
+      <Link to="/music">
+        <CustomInfo title="Room" icon={<LibraryMusicIcon />} />
+      </Link>
     </>
   );
 };

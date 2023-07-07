@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import UserAPI from "~/apis/UserAPI";
-import { LayoutAuth } from "~/layouts/LayoutAuth";
+import { LayoutAuth, LayoutAuthMusic } from "~/layouts/LayoutAuth";
 import LayoutBase from "~/layouts/layoutBase/LayoutBase";
 import { empty } from "~/redux/slices/user";
 import { useAppDispatch, useAppSelector } from "~/redux/store";
@@ -166,6 +166,12 @@ const roomDetailRoute = new Route({
   ),
 });
 
+const musicRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: "/music",
+  component: () => <LayoutAuthMusic />,
+});
+
 const routeTree = rootRoute.addChildren([
   homeRoute,
   errorRoute,
@@ -177,6 +183,7 @@ const routeTree = rootRoute.addChildren([
     mangaChapterRoute,
   ]),
   roomRoute.addChildren([roomIndexRoute, roomDetailRoute]),
+  musicRoute,
 ]);
 
 const router = new Router({ routeTree });
