@@ -6,7 +6,7 @@ type MusicPlayerProps = {
   trackUri?: string;
 };
 
-function MusicPlayer(props: MusicPlayerProps) {
+function SpotifyPlayer(props: MusicPlayerProps) {
   const { accessToken, trackUri } = props;
 
   const [play, setPlay] = useState(false);
@@ -29,4 +29,4 @@ function MusicPlayer(props: MusicPlayerProps) {
   );
 }
 
-export default MusicPlayer;
+export default SpotifyPlayer;

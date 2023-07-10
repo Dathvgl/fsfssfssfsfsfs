@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MusicAPI from "~/apis/MusicAPI";
+import MusicAPI from "~/apis/SpotifyAPI";
 
 export function useAuthMusic(code: string) {
   const [accessToken, setAccessToken] = useState<string>();

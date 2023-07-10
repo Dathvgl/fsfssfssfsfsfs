@@ -4,7 +4,7 @@ import UserAPI from "~/apis/UserAPI";
 import { envs } from "./Enviroments";
 import { store } from "~/redux/store";
 import { empty, getProfile } from "~/redux/slices/user";
-import MusicAPI from "~/apis/MusicAPI";
+import MusicAPI from "~/apis/SpotifyAPI";
 
 class HttpClient {
   instance: AxiosInstance;
@@ -36,23 +36,6 @@ httpClientPrivate.interceptors.response.use(
       toast.error(response?.data as string);
       store.dispatch(empty());
       // window.location.href = "/"
-    }
-  }
-);
-
-export const httpClientMusic = new HttpClient().instance;
-
-httpClientMusic.interceptors.response.use(
-  (res) => res,
-  async () => {
-    try {
-      const { data } = await MusicAPI.refresh();
-      httpClientMusic.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${data.access_token}`;
-    } catch (error) {
-      const { response } = error as AxiosError;
-      toast.error(response?.data as string);
     }
   }
 );

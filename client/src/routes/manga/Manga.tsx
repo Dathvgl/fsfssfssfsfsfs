@@ -36,7 +36,9 @@ function MangaRoute() {
     queryKey: ["mangaLib", "lastest", "search"],
     queryFn: async () => {
       if (title == "") return null;
-      return await MangaLibAPI.search("nettruyen", title);
+      const res = await MangaLibAPI.search("nettruyen", title);
+      if (!res || res.status >= 300) throw new Error();
+      return res.data;
     },
   });
 
@@ -124,7 +126,7 @@ function MangaRoute() {
           </IconButton>
           {dataSearch && !isLoadingSearch && !isErrorSearch && (
             <SimpleBar className="absolute mt-1 top-full left-0 w-full h-64 z-10 rounded-lg bg-white overflow-y-auto">
-              {dataSearch.data.data.map((item, index) => {
+              {dataSearch.data.map((item, index) => {
                 const url = new URL(item.href);
                 const path = url.pathname.replace("/truyen-tranh/", "");
 

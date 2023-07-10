@@ -57,3 +57,12 @@ a:active {
 .cutoff-btn:focus {
   @apply outline-none;
 }
+
+.accordion-summary {
+  padding-left: 0 !important;
+  @apply min-w-max;
+}
+
+.accordion-summary .MuiAccordionSummary-content {
+  @apply m-0;
+}

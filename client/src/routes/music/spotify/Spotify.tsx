@@ -2,14 +2,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
 import { Divider, IconButton, InputBase, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
-import { spotifyApi } from "~/apis/MusicAPI";
+import { spotifyApi } from "~/apis/SpotifyAPI";
 import CustomBox from "~/components/CustomBox";
 import useDebounce from "~/hooks/Debounce";
 import { useAuthMusic } from "~/hooks/Music";
-import MusicPlayer from "./components/Player";
-import MusicTracks from "./components/Tracks";
+import SpotifyPlayer from "./components/Player";
+import SpotifyTracks from "./components/Tracks";
 
-function MusicRoute(props: { code: string }) {
+function SpotifyRoute(props: { code: string }) {
   const { code } = props;
 
   const [inputName, setInputName] = useState<string>("");
@@ -69,15 +69,15 @@ function MusicRoute(props: { code: string }) {
         </Paper>
       </div>
       <br />
-      <MusicTracks
+      <SpotifyTracks
         search={searchStr}
         accessToken={accessToken}
         callback={(uri) => setTrackUri(() => uri)}
       />
       <br />
-      <MusicPlayer accessToken={accessToken} trackUri={trackUri} />
+      <SpotifyPlayer accessToken={accessToken} trackUri={trackUri} />
     </CustomBox>
   );
 }
 
-export default MusicRoute;
+export default SpotifyRoute;

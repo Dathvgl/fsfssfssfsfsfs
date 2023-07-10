@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import SimpleBar from "simplebar-react";
-import MusicAPI from "~/apis/MusicAPI";
+import MusicAPI from "~/apis/SpotifyAPI";
 import CustomImage from "~/components/CustomImage";
 
 type MusicTracksProps = {
@@ -10,7 +10,7 @@ type MusicTracksProps = {
   accessToken?: string;
 };
 
-function MusicTracks(props: MusicTracksProps) {
+function SpotifyTracks(props: MusicTracksProps) {
   const { search, callback, accessToken } = props;
 
   const { data, isLoading, isError, refetch } = useQuery({
@@ -54,4 +54,4 @@ function MusicTracks(props: MusicTracksProps) {
   );
 }
 
-export default MusicTracks;
+export default SpotifyTracks;

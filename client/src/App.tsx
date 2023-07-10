@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import { useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import UserAPI from "~/apis/UserAPI";
-import { LayoutAuth, LayoutAuthMusic } from "~/layouts/LayoutAuth";
+import { LayoutAuth, LayoutAuthMusicSpotify } from "~/layouts/LayoutAuth";
 import LayoutBase from "~/layouts/layoutBase/LayoutBase";
 import { empty } from "~/redux/slices/user";
 import { useAppDispatch, useAppSelector } from "~/redux/store";
@@ -32,6 +32,7 @@ const MangaDetail = customLazy(
 const MangaChapter = customLazy(() => import("~/routes/manga/routes/Chapter"));
 const RoomRoute = customLazy(() => import("~/routes/room/Room"));
 const RoomDetail = customLazy(() => import("~/routes/room/routes/Detail"));
+const MusicZingMP3 = customLazy(() => import("~/routes/music/zingMP3/ZingMP3"));
 
 function RootApp() {
   const navigate = useNavigate();
@@ -169,7 +170,18 @@ const roomDetailRoute = new Route({
 const musicRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/music",
-  component: () => <LayoutAuthMusic />,
+});
+
+const musicSpotifyRoute = new Route({
+  getParentRoute: () => musicRoute,
+  path: "/spotify",
+  component: () => <LayoutAuthMusicSpotify />,
+});
+
+const musicZingMP3Route = new Route({
+  getParentRoute: () => musicRoute,
+  path: "/zingMP3",
+  component: MusicZingMP3,
 });
 
 const routeTree = rootRoute.addChildren([
@@ -183,7 +195,7 @@ const routeTree = rootRoute.addChildren([
     mangaChapterRoute,
   ]),
   roomRoute.addChildren([roomIndexRoute, roomDetailRoute]),
-  musicRoute,
+  musicRoute.addChildren([musicSpotifyRoute, musicZingMP3Route]),
 ]);
 
 const router = new Router({ routeTree });

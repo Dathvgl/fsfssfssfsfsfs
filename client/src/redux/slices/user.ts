@@ -77,16 +77,12 @@ export const login = createAsyncThunk<
   { rejectValue: UserState }
 >("user/login", async (props, { rejectWithValue }) => {
   try {
-    console.log("Login Redux");
     const { data } = await UserAPI.login(props);
-    console.log(data);
-
     httpClientPrivate.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${data.token}`;
 
     const res = await UserAPI.getProfile();
-    console.log(res.data);
     return { user: res.data };
   } catch (error) {
     const { response } = error as AxiosError;

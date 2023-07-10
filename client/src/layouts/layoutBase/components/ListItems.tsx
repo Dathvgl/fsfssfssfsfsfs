@@ -1,10 +1,15 @@
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import AutoStoriesSharpIcon from "@mui/icons-material/AutoStoriesSharp";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  ButtonBase,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -26,7 +31,22 @@ function CustomInfo(props: { title: string; icon: ReactNode }) {
   );
 }
 
-export const MainList = () => {
+function CustomInfoBase(props: { title: string; icon: ReactNode }) {
+  const { title, icon } = props;
+
+  return (
+    <>
+      <ButtonBase sx={{ pl: "16px", py: "8px" }}>
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={title} />
+      </ButtonBase>
+    </>
+  );
+}
+
+export const MainList = (props: { open: boolean }) => {
+  const { open } = props;
+
   return (
     <>
       <Link to="/">
@@ -41,9 +61,20 @@ export const MainList = () => {
       <Link to="/room">
         <CustomInfo title="Room" icon={<MeetingRoomIcon />} />
       </Link>
-      <Link to="/music">
-        <CustomInfo title="Room" icon={<LibraryMusicIcon />} />
-      </Link>
+      <Accordion className="m-0" disableGutters expanded={open}>
+        <AccordionSummary
+          className="accordion-summary"
+          expandIcon={<ExpandMoreIcon />}
+        >
+          <CustomInfoBase title="Music" icon={<LibraryMusicIcon />} />
+        </AccordionSummary>
+        <Link to="/music/spotify">
+          <AccordionDetails>Spotify</AccordionDetails>
+        </Link>
+        <Link to="/music/zingMP3">
+          <AccordionDetails>Zing MP3</AccordionDetails>
+        </Link>
+      </Accordion>
     </>
   );
 };

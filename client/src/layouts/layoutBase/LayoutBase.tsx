@@ -149,7 +149,7 @@ function LayoutBase() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <MainList />
+            <MainList open={open} />
             <Divider sx={{ my: 1 }} />
             {SecondList}
             <Divider sx={{ my: 1 }} />
