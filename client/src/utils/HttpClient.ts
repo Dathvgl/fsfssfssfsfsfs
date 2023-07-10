@@ -1,10 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { toast } from "react-toastify";
 import UserAPI from "~/apis/UserAPI";
-import { envs } from "./Enviroments";
-import { store } from "~/redux/store";
 import { empty, getProfile } from "~/redux/slices/user";
-import MusicAPI from "~/apis/SpotifyAPI";
+import { store } from "~/redux/store";
+import { envs } from "./Enviroments";
 
 class HttpClient {
   instance: AxiosInstance;
