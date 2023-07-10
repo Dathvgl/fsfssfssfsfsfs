@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 // import SpotifyPlayer from "react-spotify-web-playback";
 
 type MusicPlayerProps = {
@@ -9,9 +8,9 @@ type MusicPlayerProps = {
 function SpotifyPlayer(props: MusicPlayerProps) {
   const { accessToken, trackUri } = props;
 
-  const [play, setPlay] = useState(false);
+  // const [play, setPlay] = useState(false);
 
-  useEffect(() => setPlay(true), [trackUri]);
+  // useEffect(() => setPlay(true), [trackUri]);
 
   if (!accessToken || !trackUri) return null;
 
