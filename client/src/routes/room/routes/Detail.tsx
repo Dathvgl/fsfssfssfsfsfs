@@ -13,7 +13,7 @@ import CustomUserDot from "~/components/CustomUserDot/CustomUserDot";
 import { useAppSelector } from "~/redux/store";
 import { RoomChatResponse } from "~/types/mongo/roomDB";
 import { socket } from "~/utils/Socket";
-import { nowISO } from "~/utils/date";
+import { nowISO } from "~/utils/Date";
 import DetailChat from "./components/Chat";
 import RoomPanel from "./components/Panel";
 

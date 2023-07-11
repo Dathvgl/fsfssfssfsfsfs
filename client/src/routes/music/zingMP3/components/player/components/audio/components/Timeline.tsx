@@ -1,7 +1,7 @@
 import { ChangeEvent, RefObject, useEffect, useState } from "react";
 import { played } from "~/redux/slices/player";
 import { useAppDispatch, useAppSelector } from "~/redux/store";
-import { durationUTC } from "~/utils/date";
+import { durationUTC } from "~/utils/Date";
 
 function AudioTimeline(props: { audioRef: RefObject<HTMLAudioElement> }) {
   const { audioRef } = props;

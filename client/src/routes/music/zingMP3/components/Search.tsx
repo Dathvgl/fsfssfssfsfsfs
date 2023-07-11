@@ -8,7 +8,7 @@ import ZingMP3API from "~/apis/ZingMP3API";
 import CustomImage from "~/components/CustomImage";
 import useDebounce from "~/hooks/Debounce";
 import { ZingMP3Src } from "~/routes/music/Player";
-import { durationUTC } from "~/utils/date";
+import { durationUTC } from "~/utils/Date";
 
 function ZingMP3SearchList(props: { name: string }) {
   const { name } = props;
