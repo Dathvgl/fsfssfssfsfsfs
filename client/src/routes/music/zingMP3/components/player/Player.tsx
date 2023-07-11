@@ -7,7 +7,7 @@ function ZingMP3PlayerControls(props: { src: string }) {
   const { src } = props;
 
   return (
-    <div className="w-full p-4 grid grid-cols-3 gap-4 bg-blue-300">
+    <div className="w-full px-4 py-2 grid grid-cols-3 gap-4 bg-blue-300 z-[3000]">
       <PlayerInfo />
       <PlayerAudio src={src} />
       <PlayerVolume />

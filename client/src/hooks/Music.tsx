@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import MusicAPI from "~/apis/SpotifyAPI";
 
-export function useAuthMusic(code: string) {
+export function useAuthMusicSpotify(code: string) {
   const [accessToken, setAccessToken] = useState<string>();
   const [refreshToken, setRefreshToken] = useState<string>();
   const [expiresIn, setExpiresIn] = useState<number>();
@@ -12,7 +12,7 @@ export function useAuthMusic(code: string) {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setExpiresIn(res.data.expiresIn);
-        window.history.pushState({}, "", "/");
+        window.history.pushState({}, "", "/music/spotify");
       })
       .catch(() => (window.location.href = "/"));
   }, [code]);

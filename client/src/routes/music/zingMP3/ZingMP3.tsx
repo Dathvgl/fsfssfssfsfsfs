@@ -6,6 +6,7 @@ import ZingMP3NewRelease from "./components/NewRelease";
 import RTChartHome from "./components/RTChart";
 import ZingMP3Search from "./components/Search";
 import ZingMP3Player from "./components/player/Player";
+import SimpleBar from "simplebar-react";
 
 function ZingMP3Route() {
   const { data, isLoading, isError } = useQuery({
@@ -24,7 +25,7 @@ function ZingMP3Route() {
 
   return (
     <CustomScreen>
-      <div className="flex-1 p-8">
+      <SimpleBar className="flex-1 min-h-0 p-8">
         <ZingMP3Search />
         {/* <BannerHome
           data={items.find((item) => {
@@ -89,7 +90,7 @@ function ZingMP3Route() {
           })}
           row={1}
         />
-      </div>
+      </SimpleBar>
       <ZingMP3Player />
     </CustomScreen>
   );

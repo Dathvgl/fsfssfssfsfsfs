@@ -35,39 +35,37 @@ function RTChartHome(props: { data?: unknown | undefined }) {
   const item = data as ZingMP3RTChartSection;
 
   return (
-    <>
-      <div className="mt-9 flex items-center gap-8 p-8 text-white bg-gradient-to-b from-cyan-500 to-blue-500 rounded-lg">
-        <div className="w-80 font-semibold">
-          <div className="text-3xl">#zingchart</div>
-          <br />
-          <div className="flex flex-col gap-4">
-            {item.items.slice(0, 3).map((item, index) => (
-              <div
-                key={index}
-                className="w-full rounded-lg p-4 gap-4 bg-white bg-opacity-20 flex items-center"
-              >
-                <div className="flex items-center">
-                  <div className="px-4">{index}</div>
-                  <div className="w-12 h-12">
-                    <CustomImage
-                      className="h-full rounded"
-                      src={item.thumbnail}
-                    />
-                  </div>
+    <div className="mt-9 flex items-stretch gap-8 p-8 text-white bg-gradient-to-b from-cyan-500 to-blue-500 rounded-lg">
+      <div className="w-80 font-semibold">
+        <div className="text-3xl">#zingchart</div>
+        <br />
+        <div className="flex flex-col gap-4">
+          {item.items.slice(0, 3).map((item, index) => (
+            <div
+              key={index}
+              className="w-full rounded-lg p-4 gap-4 bg-white bg-opacity-20 flex items-center"
+            >
+              <div className="flex items-center">
+                <div className="px-4">{index}</div>
+                <div className="w-12 h-12">
+                  <CustomImage
+                    className="h-full rounded"
+                    src={item.thumbnail}
+                  />
                 </div>
-                <div className="flex-1 line-clamp-2">{item.title}</div>
               </div>
-            ))}
-            <button className="border border-white rounded-3xl px-6 py-2 row-center">
-              Xem thêm
-            </button>
-          </div>
-        </div>
-        <div className="flex-1">
-          <RTChartLine item={item} />
+              <div className="flex-1 line-clamp-2">{item.title}</div>
+            </div>
+          ))}
+          <button className="border border-white rounded-3xl px-6 py-2 row-center">
+            Xem thêm
+          </button>
         </div>
       </div>
-    </>
+      <div className="flex-1 min-w-0">
+        <RTChartLine item={item} />
+      </div>
+    </div>
   );
 }
 
@@ -114,8 +112,10 @@ export function RTChartLine(props: { item: ZingMP3RTChartSection }) {
   };
 
   return (
-    <div className="w-full">
-      <Line {...lineProps} />
+    <div className="w-full h-full flex items-center">
+      <div className="w-full h-3/4">
+        <Line {...lineProps} height="100%" />
+      </div>
     </div>
   );
 }

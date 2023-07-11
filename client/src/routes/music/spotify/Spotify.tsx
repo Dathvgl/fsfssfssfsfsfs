@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { spotifyApi } from "~/apis/SpotifyAPI";
 import CustomBox from "~/components/CustomBox";
 import useDebounce from "~/hooks/Debounce";
-import { useAuthMusic } from "~/hooks/Music";
+import { useAuthMusicSpotify } from "~/hooks/Music";
 import SpotifyPlayer from "./components/Player";
 import SpotifyTracks from "./components/Tracks";
 
@@ -15,7 +15,7 @@ function SpotifyRoute(props: { code: string }) {
   const [inputName, setInputName] = useState<string>("");
   const [trackUri, setTrackUri] = useState<string>();
   const searchStr = useDebounce(inputName);
-  const accessToken = useAuthMusic(code);
+  const accessToken = useAuthMusicSpotify(code);
 
   useEffect(() => {
     if (!accessToken) return;

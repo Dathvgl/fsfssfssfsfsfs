@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import ZingMP3API from "~/apis/ZingMP3API";
-import { init } from "~/redux/slices/player";
+import { init, played } from "~/redux/slices/player";
 import { store } from "~/redux/store";
 
 export async function ZingMP3Src(id: string) {
@@ -9,6 +9,7 @@ export async function ZingMP3Src(id: string) {
     else {
       const { "128": src } = data.data;
       store.dispatch(init({ id, src }));
+      store.dispatch(played({ played: false }));
     }
   });
 }

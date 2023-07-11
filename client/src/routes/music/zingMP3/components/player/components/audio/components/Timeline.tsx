@@ -1,9 +1,12 @@
 import { ChangeEvent, RefObject, useEffect, useState } from "react";
-import { useAppSelector } from "~/redux/store";
+import { played } from "~/redux/slices/player";
+import { useAppDispatch, useAppSelector } from "~/redux/store";
 import { durationUTC } from "~/utils/date";
 
 function AudioTimeline(props: { audioRef: RefObject<HTMLAudioElement> }) {
   const { audioRef } = props;
+
+  const dispatch = useAppDispatch();
   const player = useAppSelector((state) => state.player);
 
   const [time, setTime] = useState(0);
@@ -18,6 +21,11 @@ function AudioTimeline(props: { audioRef: RefObject<HTMLAudioElement> }) {
 
     audioRef.current.ontimeupdate = () => {
       setTime(() => audioRef.current!.currentTime);
+    };
+
+    audioRef.current.onended = () => {
+      dispatch(played({ played: false }));
+      audioRef.current!.currentTime = 0;
     };
   }, [player.id]);
 

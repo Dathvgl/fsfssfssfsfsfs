@@ -47,12 +47,12 @@ function FourItemExtend(props: { title: string; data: any }) {
   const item = data as ZingMP3ArtistObject[];
 
   return (
-    <>
+    <div className="flex flex-col gap-1">
       <div className="line-clamp-1 font-semibold">{title}</div>
-      <div className="text-sm line-clamp-2 text-gray-300">
+      <div className="text-sm line-clamp-2">
         {item.map(({ name }) => name).join(", ")}
       </div>
-    </>
+    </div>
   );
 }
 
